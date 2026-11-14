@@ -60,8 +60,17 @@ class FmdServerRepository(
             }
 
             override fun onResponse(call: Call, response: Response) {
-                val version = response.body.string()
-                listener.onResponse(version)
+                if (response.isSuccessful) {
+                    val version = response.body.string()
+                    listener.onResponse(version)
+                } else {
+                    val error = ServerError(
+                        statusCode = response.code,
+                        body = response.body.string(),
+                        message = response.message
+                    )
+                    errorListener.onError(error)
+                }
             }
         }
 
