@@ -65,7 +65,10 @@ fun FmdPermissionDialog(
 
                 // Column of commands/permissions
                 LazyColumn(
-                    modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
+                    modifier = Modifier
+                        // https://gitlab.com/fmd-foss/fmd-android/-/work_items/452
+                        .weight(1f, fill = false)
+                        .padding(top = 16.dp, bottom = 16.dp)
                 ) {
                     items(commands) { command ->
                         CommandRow(
