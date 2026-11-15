@@ -30,7 +30,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.ironcladmobile.wipe"
+        applicationId "com.ironcladmobiles.wipe"
         minSdkVersion 24
         // TODO: raise targetSdk again.
         // We supported targetSdk 34 until BluetoothCommand was added, which requires max 32 to work:

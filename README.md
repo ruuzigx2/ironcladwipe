@@ -1,7 +1,7 @@
 # Ironclad Wipe
 
 Ironclad Wipe is a modified version of [FMD Android](https://gitlab.com/fmd-foss/fmd-android),
-rebranded by Ironclad Mobile (changes started November 2026: app name, application ID,
+rebranded by Ironclad Mobiles (changes started November 2026: app name, application ID,
 default SMS command word "iron", About screen notice).
 
 It remains licensed under the GNU General Public License v3.0 (see `LICENSE`).
