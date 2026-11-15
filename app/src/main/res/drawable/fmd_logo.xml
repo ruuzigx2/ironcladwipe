@@ -3,23 +3,23 @@
     android:height="100dp"
     android:viewportWidth="100"
     android:viewportHeight="100">
-    <path
-        android:pathData="M10,86a40,9 0,1 0,80 0a40,9 0,1 0,-80 0z"
-        android:strokeWidth="5"
-        android:strokeColor="#318f2f" />
-    <path
-        android:pathData="M50,75l-20,-20a27,27 0,1 1,40 0l-20,20z"
-        android:strokeWidth="15"
-        android:strokeColor="#4cb050"
-        android:strokeLineJoin="round" />
-    <path
-        android:pathData="M50,82l-25,-25a32.5,32.5 0,1 1,50 0l-25,25z"
-        android:strokeWidth="5"
-        android:strokeColor="#318f2f"
-        android:strokeLineJoin="round" />
-    <path
-        android:pathData="M50,36m-8,0a8,8 0,1 1,16 0a8,8 0,1 1,-16 0"
-        android:strokeWidth="5"
-        android:strokeColor="#4cb050"
-        android:strokeLineJoin="round" />
+    <!-- Ironclad chain-link mark: two interlocking links -->
+    <group
+        android:translateX="36"
+        android:translateY="64"
+        android:rotation="-45">
+        <path
+            android:pathData="M-15,-13H15A13,13 0,0 1,15 13H-15A13,13 0,0 1,-15 -13Z"
+            android:strokeWidth="8"
+            android:strokeColor="#14120F" />
+    </group>
+    <group
+        android:translateX="64"
+        android:translateY="36"
+        android:rotation="-45">
+        <path
+            android:pathData="M-15,-13H15A13,13 0,0 1,15 13H-15A13,13 0,0 1,-15 -13Z"
+            android:strokeWidth="8"
+            android:strokeColor="#D9480F" />
+    </group>
 </vector>
