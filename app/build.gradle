@@ -30,7 +30,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "de.nulide.findmydevice"
+        applicationId "com.ironcladmobile.wipe"
         minSdkVersion 24
         // TODO: raise targetSdk again.
         // We supported targetSdk 34 until BluetoothCommand was added, which requires max 32 to work:
@@ -65,7 +65,7 @@ android {
     productFlavors {
         prod {
             dimension "default"
-            buildConfigField "String", "DEFAULT_FMD_COMMAND", "\"fmd\""
+            buildConfigField "String", "DEFAULT_FMD_COMMAND", "\"iron\""
             buildConfigField "String", "DEFAULT_FMD_SERVER_URL", "\"https://server.fmd-foss.org\""
         }
         edge {

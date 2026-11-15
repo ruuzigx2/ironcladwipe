@@ -77,7 +77,7 @@ fun <T : AccessItem> AccessControlTab(
     onAddSecondaryClicked: (() -> Unit)? = null,
     onDeleteClicked: (T) -> Unit = {},
     onSavePermissionClicked: (T, Long) -> Unit = { _, _ -> },
-    commandKeyword: String = "fmd",
+    commandKeyword: String = "iron",
 ) {
     var permissionToEdit: T? by rememberSaveable { mutableStateOf(null) }
     var itemToDelete: T? by rememberSaveable { mutableStateOf(null) }

@@ -129,7 +129,7 @@ fun AboutHeader(
                     }
                 )
                 AssistChip(
-                    onClick = { Utils.openUrl(context, "https://gitlab.com/fmd-foss/fmd-android") },
+                    onClick = { Utils.openUrl(context, "https://github.com/ruuzigx2/ironcladwipe") },
                     label = { Text(stringResource(R.string.about_source_code)) },
                     leadingIcon = {
                         Icon(
@@ -139,6 +139,13 @@ fun AboutHeader(
                     }
                 )
             }
+            Spacer(Modifier.height(12.dp))
+            // GPL-3.0 notice: credit to upstream FMD, modification notice, and source link.
+            BasicText(
+                text = stringResource(R.string.about_gpl_notice),
+                style = TextStyle(color = subtle, fontSize = 11.sp),
+                overflow = TextOverflow.Visible,
+            )
         }
         // Bottom divider matching design's `borderBottom: 1px solid outlineVariant`
         Box(

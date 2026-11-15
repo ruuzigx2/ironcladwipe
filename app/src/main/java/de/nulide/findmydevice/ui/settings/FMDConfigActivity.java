@@ -1,5 +1,6 @@
 package de.nulide.findmydevice.ui.settings;
 
+import de.nulide.findmydevice.BuildConfig;
 import static de.nulide.findmydevice.ui.UiUtil.setupEdgeToEdgeAppBar;
 import static de.nulide.findmydevice.ui.UiUtil.setupEdgeToEdgeScrollView;
 
@@ -106,7 +107,7 @@ public class FMDConfigActivity extends FmdActivity implements CompoundButton.OnC
         } else if (edited == editTextFmdCommand.getText()) {
             if (edited.toString().isEmpty()) {
                 Toast.makeText(this, getString(R.string.Toast_Empty_FMDCommand), Toast.LENGTH_LONG).show();
-                settings.set(Settings.SET_FMD_COMMAND, "fmd");
+                settings.set(Settings.SET_FMD_COMMAND, BuildConfig.DEFAULT_FMD_COMMAND);
             } else {
                 settings.set(Settings.SET_FMD_COMMAND, edited.toString().toLowerCase());
             }
