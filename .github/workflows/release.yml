@@ -35,7 +35,15 @@ jobs:
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
-          printf '%s' "$KEYSTORE_BASE64" | tr -d ' \n\r' | base64 -d > "$RUNNER_TEMP/release.jks"
+          CLEAN=$(printf '%s' "$KEYSTORE_BASE64" | tr -d ' \n\r\t')
+          echo "Keystore text length: ${#CLEAN} characters"
+          if printf '%s' "$CLEAN" | grep -q '[^A-Za-z0-9+/=]'; then
+            echo "::error::KEYSTORE_BASE64 contains characters that are not base64 - it was probably not copied from ironclad-release.txt"; exit 1
+          fi
+          if [ "${#CLEAN}" -lt 2000 ]; then
+            echo "::error::KEYSTORE_BASE64 is too short (${#CLEAN} characters) - the copy was incomplete or the wrong text was pasted"; exit 1
+          fi
+          printf '%s' "$CLEAN" | base64 -d > "$RUNNER_TEMP/release.jks" || { echo "::error::KEYSTORE_BASE64 is not complete base64 text (copy was cut off)"; exit 1; }
       - name: Build signed release APK
         env:
           KEYSTORE_FILE: ${{ runner.temp }}/release.jks
