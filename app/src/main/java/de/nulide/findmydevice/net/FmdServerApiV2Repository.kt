@@ -466,7 +466,7 @@ fun <T> Call<T>.enqueue(listener: Listener<T>, errorListener: ErrorListener) {
     enqueue(object : Callback<T> {
         override fun onResponse(call: Call<T>, response: Response<T>) {
             val body = response.body()
-            if (body != null) {
+            if (body != null && response.isSuccessful) {
                 listener.onResponse(body)
             } else {
                 val error = ServerError(
