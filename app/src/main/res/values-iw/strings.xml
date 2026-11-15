@@ -24,10 +24,10 @@
     <string name="loading">טוען…</string>
     <string name="help">עזרה</string>
     <string name="Settings_Settings">הגדרות</string>
-    <string name="Settings_FMDConfig">FMD - תצורה</string>
+    <string name="Settings_FMDConfig">Ironclad Wipe - תצורה</string>
     <string name="Settings_Appearance">מראה</string>
     <string name="Settings_Import">ייבא הגדרות</string>
-    <string name="Settings_FMDCommand_Description">הפקודה מאפשרת לתקשר עם FMD.</string>
-    <string name="Settings_Ringer_Tone_Description">בחר צלצול שיושמע כאשר פקודת fmd ring נשלחת.</string>
+    <string name="Settings_FMDCommand_Description">הפקודה מאפשרת לתקשר עם Ironclad Wipe.</string>
+    <string name="Settings_Ringer_Tone_Description">בחר צלצול שיושמע כאשר פקודת iron ring נשלחת.</string>
     <string name="Settings_Select_Ringtone">בחר צלצול</string>
 </resources>

@@ -84,25 +84,19 @@ class SettingsFragment : TaggedFragment() {
         var settingIntent: Intent? = null
         when (position) {
             0 -> settingIntent = Intent(context, FMDConfigActivity::class.java)
-            1 -> settingIntent = if (!settings.serverAccountExists()) {
-                Intent(context, AddAccountActivity::class.java)
-            } else {
-                Intent(context, FMDServerActivity::class.java)
-            }
-
-            2 -> settingIntent = Intent(context, AccessControlActivity::class.java)
-            3 -> settingIntent = Intent(context, OpenCellIdActivity::class.java)
-            4 -> settingIntent = Intent(context, AppearanceActivity::class.java)
-            5 -> authenticateForBackup(context)
-            6 -> {
+            1 -> settingIntent = Intent(context, AccessControlActivity::class.java)
+            2 -> settingIntent = Intent(context, OpenCellIdActivity::class.java)
+            3 -> settingIntent = Intent(context, AppearanceActivity::class.java)
+            4 -> authenticateForBackup(context)
+            5 -> {
                 val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
                 intent.setType("*/*")
                 startActivityForResult(intent, IMPORT_REQ_CODE)
             }
 
-            7 -> settingIntent = Intent(context, LogViewActivity::class.java)
-            8 -> settingIntent = Intent(context, AboutActivity::class.java)
-            9 -> settingIntent = Intent(context, DebuggingActivity::class.java)
+            6 -> settingIntent = Intent(context, LogViewActivity::class.java)
+            7 -> settingIntent = Intent(context, AboutActivity::class.java)
+            8 -> settingIntent = Intent(context, DebuggingActivity::class.java)
         }
 
         if (settingIntent != null) {

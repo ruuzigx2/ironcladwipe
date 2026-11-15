@@ -109,26 +109,6 @@ fun AboutHeader(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 AssistChip(
-                    onClick = { Utils.openUrl(context, "https://fmd-foss.org/docs/overview") },
-                    label = { Text(stringResource(R.string.about_documentation)) },
-                    leadingIcon = {
-                        Icon(
-                            painterResource(R.drawable.ic_help),
-                            contentDescription = null,
-                        )
-                    }
-                )
-                AssistChip(
-                    onClick = { Utils.openUrl(context, "https://fmd-foss.org/donate") },
-                    label = { Text(stringResource(R.string.about_donate)) },
-                    leadingIcon = {
-                        Icon(
-                            painterResource(R.drawable.ic_volunteer_activism),
-                            contentDescription = null,
-                        )
-                    }
-                )
-                AssistChip(
                     onClick = { Utils.openUrl(context, "https://github.com/ruuzigx2/ironcladwipe") },
                     label = { Text(stringResource(R.string.about_source_code)) },
                     leadingIcon = {

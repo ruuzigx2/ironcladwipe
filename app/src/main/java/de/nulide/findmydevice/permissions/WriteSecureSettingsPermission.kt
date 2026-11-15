@@ -53,7 +53,7 @@ class WriteSecureSettingsPermission : Permission() {
     private fun requestManually(activity: Activity) {
         val intent = Intent(
             Intent.ACTION_VIEW,
-            "https://fmd-foss.org/docs/fmd-android/granting-secure-settings-access".toUri()
+            "https://github.com/ruuzigx2/ironcladwipe#readme".toUri()
         )
         activity.startActivity(intent)
     }

@@ -176,7 +176,7 @@ class SettingsRepository private constructor(private val context: Context) {
             accessRepo.insertSmsPassword(
                 SmsPassword(
                     0,
-                    label = "FMD PIN",
+                    label = "PIN",
                     passwordHash = hash,
                     permission = FmdPermission.ALL
                 )
@@ -184,7 +184,7 @@ class SettingsRepository private constructor(private val context: Context) {
             accessRepo.insertNotificationPassword(
                 NotificationPassword(
                     0,
-                    label = "FMD PIN",
+                    label = "PIN",
                     passwordHash = hash,
                     permission = FmdPermission.ALL
                 )

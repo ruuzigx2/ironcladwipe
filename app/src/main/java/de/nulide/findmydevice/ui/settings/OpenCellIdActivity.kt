@@ -52,7 +52,7 @@ class OpenCellIdActivity : FmdActivity(), TextWatcher {
             openUrl(it.context, "https://opencellid.org/")
         })
         viewBinding.buttonOpenFmdWebsite.setOnClickListener({
-            openUrl(it.context, "https://fmd-foss.org/docs/fmd-android/locating#crowdsource")
+            openUrl(it.context, "https://github.com/ruuzigx2/ironcladwipe#readme")
         })
 
         viewBinding.buttonPaste.setOnClickListener(::onPasteClicked)
