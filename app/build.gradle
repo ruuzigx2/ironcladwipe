@@ -39,14 +39,29 @@ android {
         // https://gitlab.com/Nulide/findmydevice/-/issues/220
         // noinspection ExpiredTargetSdkVersion
         targetSdkVersion 32
-        versionCode 46
-        versionName "0.17.1"
+        versionCode 1
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        // Release signing key is supplied by the CI environment; it is never stored in the repository.
+        release {
+            if (System.getenv("KEYSTORE_FILE")) {
+                storeFile file(System.getenv("KEYSTORE_FILE"))
+                storePassword System.getenv("KEYSTORE_PASSWORD")
+                keyAlias System.getenv("KEY_ALIAS")
+                keyPassword System.getenv("KEYSTORE_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            if (System.getenv("KEYSTORE_FILE")) {
+                signingConfig signingConfigs.release
+            }
             // WARNING: Compile and test the release flavor before publishing!!!
             // This is because minification may strip things that are not explicitly referenced
             // but are actually needed (e.g., objects being serialised by Gson).
