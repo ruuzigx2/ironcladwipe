@@ -1,8 +1,9 @@
 name: Release APK
 
+# Runs when the 'release' branch is updated. The version comes from versionName in app/build.gradle.
 on:
   push:
-    tags: ['v*']
+    branches: [release]
 
 permissions:
   contents: write
@@ -17,6 +18,10 @@ jobs:
           distribution: temurin
           java-version: 21
       - uses: gradle/actions/setup-gradle@v4
+      - name: Read version
+        run: |
+          V=$(grep -m1 'versionName "' app/build.gradle | sed -E 's/.*"(.*)".*/\1/')
+          echo "TAG=v$V" >> "$GITHUB_ENV"
       - name: Check signing secrets are present
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
@@ -42,7 +47,7 @@ jobs:
           APK=$(ls app/build/outputs/apk/prod/release/*.apk | head -1)
           BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
           "$BT/apksigner" verify --print-certs "$APK" | head -5
-          cp "$APK" "ironclad-wipe-${GITHUB_REF_NAME}.apk"
+          cp "$APK" "ironclad-wipe-${TAG}.apk"
       - name: Remove keystore
         if: always()
         run: rm -f "$RUNNER_TEMP/release.jks"
@@ -50,6 +55,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" "ironclad-wipe-${GITHUB_REF_NAME}.apk" \
-            --title "Ironclad Wipe ${GITHUB_REF_NAME}" \
-            --notes "Ironclad Wipe ${GITHUB_REF_NAME}. Licensed under GPL-3.0; source code is in this repository."
+          gh release create "$TAG" --target "$GITHUB_SHA" "ironclad-wipe-${TAG}.apk" \
+            --title "Ironclad Wipe ${TAG}" \
+            --notes "Ironclad Wipe ${TAG}. Licensed under GPL-3.0; source code is in this repository."
