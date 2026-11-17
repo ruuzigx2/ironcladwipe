@@ -1,0 +1,137 @@
+name: Check for FMD updates
+
+# Every Monday (and on demand) this checks FMD Android for a new release.
+# If there is one, it merges it into a new branch, re-applies the Ironclad branding,
+# raises the version, checks the app still builds, and opens a pull request.
+# Merging that pull request publishes the update (release.yml), and Obtainium
+# then delivers it to customers' phones.
+on:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  UPSTREAM_URL: https://gitlab.com/fmd-foss/fmd-android.git
+  RELEASE_BRANCH: release
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_BRANCH }}
+          fetch-depth: 0
+
+      - name: Find the newest FMD release
+        id: check
+        run: |
+          CURRENT=$(tr -d ' \n\r' < .upstream-version)
+          LATEST=$(git ls-remote --tags --refs "$UPSTREAM_URL" 'v*' \
+            | sed 's#.*refs/tags/##' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
+          echo "Ironclad Wipe is based on FMD $CURRENT; newest FMD release is $LATEST"
+          if [ -z "$LATEST" ]; then echo "::error::Could not read FMD releases"; exit 1; fi
+          NEWEST=$(printf '%s\n%s\n' "$CURRENT" "$LATEST" | sort -V | tail -1)
+          BRANCH="sync/fmd-$LATEST"
+          if [ "$NEWEST" = "$CURRENT" ]; then
+            echo "Already up to date."; echo "update=false" >> "$GITHUB_OUTPUT"
+          elif git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null; then
+            echo "A pull request for $LATEST is already waiting."; echo "update=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "update=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "current=$CURRENT" >> "$GITHUB_OUTPUT"
+          echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+
+      - name: Merge the FMD release, keeping Ironclad changes
+        if: steps.check.outputs.update == 'true'
+        env:
+          LATEST: ${{ steps.check.outputs.latest }}
+          BRANCH: ${{ steps.check.outputs.branch }}
+        run: |
+          git config user.name "ironclad-bot"
+          git config user.email "ironclad-bot@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git fetch --no-tags "$UPSTREAM_URL" "refs/tags/$LATEST:refs/tags/upstream-$LATEST"
+          git merge --no-commit --no-ff -X ours "upstream-$LATEST" || true
+          # Any conflict left (e.g. a file Ironclad deleted but FMD changed): keep the Ironclad side.
+          for f in $(git diff --name-only --diff-filter=U); do
+            if git cat-file -e "HEAD:$f" 2>/dev/null; then git checkout --ours -- "$f" && git add -- "$f"
+            else git rm -q --cached -- "$f"; rm -f -- "$f"; fi
+          done
+          # Never take FMD's CI files; keep only Ironclad's workflows.
+          git checkout HEAD -- .github
+          for f in $(git diff --cached --name-only --diff-filter=A HEAD -- .github); do git rm -q -f -- "$f"; done
+          git commit -q --no-edit -m "Merge FMD $LATEST"
+
+      - name: Re-apply Ironclad branding and raise the version
+        if: steps.check.outputs.update == 'true'
+        id: brand
+        env:
+          LATEST: ${{ steps.check.outputs.latest }}
+        run: |
+          python3 scripts/ironclad_rebrand.py | tee rebrand.log
+          CODE=$(grep -m1 -E '^\s*versionCode [0-9]+' app/build.gradle | grep -oE '[0-9]+')
+          NAME=$(grep -m1 'versionName "' app/build.gradle | sed -E 's/.*"(.*)".*/\1/')
+          IFS=. read -r MA MI PA <<< "$NAME"
+          NEW_NAME="$MA.$((MI + 1)).0"
+          NEW_CODE=$((CODE + 1))
+          sed -i -E "0,/^(\s*)versionCode [0-9]+/s//\1versionCode $NEW_CODE/" app/build.gradle
+          sed -i -E "0,/versionName \"[^\"]*\"/s//versionName \"$NEW_NAME\"/" app/build.gradle
+          echo "$LATEST" > .upstream-version
+          echo "Version $NAME ($CODE) -> $NEW_NAME ($NEW_CODE)"
+          echo "new_name=$NEW_NAME" >> "$GITHUB_OUTPUT"
+          git add -A -- app .upstream-version
+          git commit -q -m "Ironclad Wipe $NEW_NAME (based on FMD $LATEST)"
+
+      - uses: actions/setup-java@v4
+        if: steps.check.outputs.update == 'true'
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+        if: steps.check.outputs.update == 'true'
+
+      - name: Check the app still builds
+        if: steps.check.outputs.update == 'true'
+        run: ./gradlew assembleProdDebug
+
+      - uses: actions/upload-artifact@v4
+        if: steps.check.outputs.update == 'true'
+        with:
+          name: ironclad-wipe-${{ steps.brand.outputs.new_name }}-test-build
+          path: app/build/outputs/apk/prod/debug/*.apk
+
+      - name: Open a pull request for approval
+        if: steps.check.outputs.update == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CURRENT: ${{ steps.check.outputs.current }}
+          LATEST: ${{ steps.check.outputs.latest }}
+          BRANCH: ${{ steps.check.outputs.branch }}
+          NEW_NAME: ${{ steps.brand.outputs.new_name }}
+        run: |
+          git push -u origin "$BRANCH"
+          {
+            echo "FMD has released **$LATEST** (Ironclad Wipe was based on $CURRENT)."
+            echo
+            echo "This pull request merges it in, re-applies the Ironclad branding and sets the version to **$NEW_NAME**. The app was built successfully."
+            echo
+            echo "**To publish:** if you can, test the build on a spare phone first (download it from this workflow run under *Artifacts*), then tap *Merge pull request*. The release is built and signed automatically, and Obtainium delivers it to customers' phones."
+            echo
+            echo "FMD's changes: https://gitlab.com/fmd-foss/fmd-android/-/tags/$LATEST"
+            echo
+            echo "<details><summary>Branding fixes applied</summary>"
+            echo
+            echo '```'
+            cat rebrand.log
+            echo '```'
+            echo "</details>"
+          } > pr-body.md
+          gh pr create --base "$RELEASE_BRANCH" --head "$BRANCH" \
+            --title "Update Ironclad Wipe to $NEW_NAME (FMD $LATEST)" --body-file pr-body.md
