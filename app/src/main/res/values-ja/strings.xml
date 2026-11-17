@@ -160,7 +160,7 @@
     <string name="about_app_icon_description">アプリアイコン</string>
     <string name="about_documentation">ドキュメント</string>
     <string name="about_donate">寄付する</string>
-    <string name="app_description">Ironclad Wipe（Find My Device）をつかうと、遠隔でデバイスを探しだせます。SMS、インスタントメッセンジャー、またはIronclad Wipeサーバーをつかい、Ironclad Wipeと通信できます。デバイスの位置を特定したり、着信音を鳴らしたり、ロックしたり、データをすべて消去したりなどを、すべて遠隔で操作できます。</string>
+    <string name="app_description">Ironclad Wipeをつかうと、遠隔でデバイスを探しだせます。SMS、インスタントメッセンジャー、またはIronclad Wipeサーバーをつかい、Ironclad Wipeと通信できます。デバイスの位置を特定したり、着信音を鳴らしたり、ロックしたり、データをすべて消去したりなどを、すべて遠隔で操作できます。</string>
     <string name="notify_crypto_update_title">要対応</string>
     <string name="notify_crypto_update_text">Ironclad Wipe の使用を継続するためにいくつかの設定を更新する必要があります。 クリックして開きます.</string>
     <string name="cmd_bluetooth_description_short">Bluetoothをオン/オフに切り替える</string>
